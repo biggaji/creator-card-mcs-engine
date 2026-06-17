@@ -19,6 +19,15 @@ const ERROR_CODE = {
   VALIDATIONERR: 'VALIDATION_ERROR',
   INVLDDATA: 'INVALID_REQUEST_DATA',
   RTLIMERR: 'RATE_LIMIT_ERROR',
+
+  // Custom error for creator cards
+  SL02: 'SL02',
+  AC01: 'AC01',
+  AC05: 'AC05',
+  NF01: 'NF01',
+  NF02: 'NF02',
+  AC03: 'AC03',
+  AC04: 'AC04',
 };
 
 const ERROR_STATUS_CODE_MAPPING = {
@@ -35,6 +44,15 @@ const ERROR_STATUS_CODE_MAPPING = {
   DUPLICATE_RECORD: 409,
   APPLICATION_ERROR: 500,
   RATE_LIMIT_ERROR: 429,
+
+  // Custom error status mapping for creator cards
+  SL02: 400,
+  AC01: 400,
+  AC05: 400,
+  NF01: 404,
+  NF02: 404,
+  AC03: 403,
+  AC04: 403,
 };
 
 module.exports = { ERROR_CODE, ERROR_STATUS_CODE_MAPPING };
