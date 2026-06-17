@@ -24,9 +24,9 @@ const schemaConfig = {
   access_code: { type: SchemaTypes.String },
   created: { type: SchemaTypes.Number },
   updated: { type: SchemaTypes.Number },
-  deleted: { type: SchemaTypes.Number, default: null },
+  deleted: { type: SchemaTypes.Number },
 };
 
 const modelSchema = new ModelSchema(schemaConfig, { collection: modelName });
 
-module.exports = DatabaseModel.model(modelName, modelSchema);
+module.exports = DatabaseModel.model(modelName, modelSchema, { paranoid: true });

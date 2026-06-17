@@ -29,7 +29,7 @@ const spec = `root { // Creator Card Specification
 
 const parsedSpec = validator.parse(spec);
 
-async function createCard(serviceData, options = {}) {
+async function createCard(serviceData) {
   let response;
   const data = validator.validate(serviceData, parsedSpec);
 
