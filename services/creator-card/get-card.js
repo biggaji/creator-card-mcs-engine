@@ -11,7 +11,7 @@ const spec = `root { // Get Creator Card Specification
 
 const parsedSpec = validator.parse(spec);
 
-async function getCard(serviceData, options = {}) {
+async function getCard(serviceData) {
   let response;
   const data = validator.validate(serviceData, parsedSpec);
 
