@@ -8,11 +8,11 @@ const { randomBytes } = require('@app-core/randomness');
 const spec = `root { // Creator Card Specification
   title string<lengthBetween:3,100>
   description? string<maxLength:500>
-  slug? string<lengthBetween:5,50|isUnique|indexed>
+  slug? string<lengthBetween:5,50>
   creator_reference string<length:20>
   links[]? {
     title string<lengthBetween:1,100>
-    url string<maxLength:200|startsWith:http://|startsWith:https://>
+    url string<startsWith:http://|startsWith:https://|maxLength:200>
   }
   service_rates? {
     currency string(NGN|USD|GBP|GHS)
@@ -33,6 +33,7 @@ async function createCard(serviceData) {
   let response;
   const data = validator.validate(serviceData, parsedSpec);
 
+  // If slug is provided, check for existing card
   if (data.slug) {
     const existingCard = await CreatorCard.findOne({
       query: { slug: data.slug },
@@ -42,15 +43,23 @@ async function createCard(serviceData) {
       throwAppError(CreatorCardMessages.SLUG_TAKEN, ERROR_CODE.SL02);
     }
   } else {
-    const baseSlug = data.title
+    const hyphenated = data.title
       .toLowerCase()
-      .replace(/\s+/g, '-')
-      .replace(/[^a-z0-9_-]/g, '');
+      .split(' ')
+      .filter((part) => part.length > 0)
+      .join('-');
+
+    const ALLOWED_SLUG_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789-_';
+
+    let baseSlug = '';
+    for (let i = 0; i < hyphenated.length; i += 1) {
+      if (ALLOWED_SLUG_CHARS.includes(hyphenated[i])) {
+        baseSlug += hyphenated[i];
+      }
+    }
 
     let generatedSlug = baseSlug;
-
     const appendRandomSuffix = (slug) => `${slug}-${randomBytes(6)}`;
-
     if (generatedSlug.length < 5) {
       generatedSlug = appendRandomSuffix(generatedSlug);
     }
@@ -82,7 +91,7 @@ async function createCard(serviceData) {
   try {
     const card = await CreatorCard.create(data);
     const { _id: id, __v, ...rest } = card;
-    response = { id, ...rest };
+    response = { id, ...rest, deleted: null };
   } catch (error) {
     appLogger.errorX(error, 'create-card-error');
     throw error;
