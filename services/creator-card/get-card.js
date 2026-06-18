@@ -37,8 +37,9 @@ async function getCard(serviceData) {
         throwAppError(CreatorCardMessages.INVALID_ACCESS_CODE, ERROR_CODE.AC04);
       }
     }
+
     const { _id: id, __v, access_code: _, ...rest } = card;
-    response = { id, ...rest };
+    response = { id, ...rest, deleted: null };
   } catch (error) {
     appLogger.errorX(error, 'get-card-error');
     throw error;
